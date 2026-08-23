@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="1500" viewBox="0 0 1200 1500">
+  <rect width="1200" height="1500" fill="#5a1c2f"/>
+  <g opacity="0.08">
+    <circle cx="900" cy="300" r="420" fill="#ffffff"/>
+  </g>
+  <text x="60" y="1400" font-family="Arial, Helvetica, sans-serif" font-weight="800" font-size="64" fill="#ffffff" letter-spacing="2">FLEX LEGGING</text>
+  <text x="60" y="1450" font-family="Arial, Helvetica, sans-serif" font-weight="600" font-size="28" fill="#ffffff" opacity="0.7">HAVOC</text>
+</svg>

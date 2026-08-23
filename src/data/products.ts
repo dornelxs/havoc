@@ -1,0 +1,805 @@
+import type { Product } from "@/types/product";
+
+const shoeSizes = (available: string[], all = ["36", "37", "38", "39", "40", "41", "42", "43", "44"]) =>
+  all.map((size) => ({ size, inStock: available.includes(size) }));
+
+const apparelSizes = (available: string[], all = ["PP", "P", "M", "G", "GG", "XG"]) =>
+  all.map((size) => ({ size, inStock: available.includes(size) }));
+
+const oneSize = () => [{ size: "Único", inStock: true }];
+
+export const products: Product[] = [
+  // ---------- TÊNIS ----------
+  {
+    id: "runner-x",
+    slug: "runner-x",
+    name: "Havoc Runner X",
+    subtitle: "Tênis de corrida performance",
+    brand: "Havoc",
+    category: "tenis",
+    gender: "unissex",
+    price: 599.9,
+    compareAtPrice: 749.9,
+    currency: "BRL",
+    description:
+      "O Runner X foi desenvolvido para quem busca performance em cada passada. Espuma de alto retorno de energia, cabedal em mesh respirável e solado com tração multidirecional.",
+    features: [
+      "Entressola em espuma HVC-Boost",
+      "Cabedal em mesh respirável",
+      "Solado com tração multidirecional",
+      "Peso leve: 240g (tam. 40)",
+    ],
+    isNew: true,
+    isBestSeller: true,
+    rating: 4.7,
+    reviewCount: 328,
+    colorways: [
+      {
+        id: "black",
+        colorName: "Preto/Branco",
+        colorHex: "#111111",
+        images: ["/products/runner-x-black.svg"],
+        sizes: shoeSizes(["38", "39", "40", "41", "42"]),
+      },
+      {
+        id: "white",
+        colorName: "Branco/Preto",
+        colorHex: "#f2f2f2",
+        images: ["/products/runner-x-white.svg"],
+        sizes: shoeSizes(["37", "38", "39", "40", "43"]),
+      },
+      {
+        id: "red",
+        colorName: "Vermelho",
+        colorHex: "#8a1c1c",
+        images: ["/products/runner-x-red.svg"],
+        sizes: shoeSizes(["39", "40", "41"]),
+      },
+    ],
+    tags: ["corrida", "lançamento"],
+  },
+  {
+    id: "strike-og",
+    slug: "strike-og",
+    name: "Havoc Strike OG",
+    subtitle: "Tênis casual streetwear",
+    brand: "Havoc",
+    category: "tenis",
+    gender: "unissex",
+    price: 449.9,
+    currency: "BRL",
+    description:
+      "Ícone de rua reinventado. O Strike OG combina couro sintético premium com detalhes retrô para um visual atemporal dentro e fora da quadra.",
+    features: [
+      "Cabedal em couro sintético premium",
+      "Entressola em EVA injetado",
+      "Solado de borracha vulcanizado",
+      "Palmilha removível",
+    ],
+    isBestSeller: true,
+    rating: 4.5,
+    reviewCount: 512,
+    colorways: [
+      {
+        id: "black",
+        colorName: "Preto",
+        colorHex: "#0d0d0d",
+        images: ["/products/strike-og-black.svg"],
+        sizes: shoeSizes(["37", "38", "39", "40", "41", "42", "44"]),
+      },
+      {
+        id: "cream",
+        colorName: "Creme",
+        colorHex: "#e7e0d1",
+        images: ["/products/strike-og-cream.svg"],
+        sizes: shoeSizes(["38", "39", "40", "41"]),
+      },
+    ],
+    tags: ["street", "clássico"],
+  },
+  {
+    id: "trail-pro",
+    slug: "trail-pro",
+    name: "Havoc Trail Pro",
+    subtitle: "Tênis para trilha",
+    brand: "Havoc",
+    category: "tenis",
+    gender: "masculino",
+    price: 679.9,
+    compareAtPrice: 799.9,
+    currency: "BRL",
+    description:
+      "Domine qualquer terreno. Solado agressivo em borracha de alta aderência e proteção lateral reforçada para trilhas técnicas.",
+    features: [
+      "Solado agressivo antiderrapante",
+      "Proteção lateral reforçada",
+      "Cabedal impermeável HVC-Shield",
+      "Amortecimento responsivo",
+    ],
+    isNew: true,
+    rating: 4.8,
+    reviewCount: 96,
+    colorways: [
+      {
+        id: "green",
+        colorName: "Verde Musgo",
+        colorHex: "#243f2c",
+        images: ["/products/trail-pro-green.svg"],
+        sizes: shoeSizes(["39", "40", "41", "42", "43"]),
+      },
+      {
+        id: "grey",
+        colorName: "Cinza Chumbo",
+        colorHex: "#3a3a3a",
+        images: ["/products/trail-pro-grey.svg"],
+        sizes: shoeSizes(["40", "41", "42", "44"]),
+      },
+    ],
+    tags: ["trilha", "outdoor"],
+  },
+  {
+    id: "sprint-elite",
+    slug: "sprint-elite",
+    name: "Havoc Sprint Elite",
+    subtitle: "Tênis de competição",
+    brand: "Havoc",
+    category: "tenis",
+    gender: "unissex",
+    price: 899.9,
+    currency: "BRL",
+    description:
+      "Feito para recordes pessoais. Placa de carbono e espuma ultra leve entregam retorno de energia máximo nas provas de velocidade.",
+    features: [
+      "Placa de fibra de carbono",
+      "Espuma PEBA ultra responsiva",
+      "Peso: 195g (tam. 40)",
+      "Drop 8mm",
+    ],
+    isNew: true,
+    rating: 4.9,
+    reviewCount: 41,
+    colorways: [
+      {
+        id: "yellow",
+        colorName: "Amarelo Volt",
+        colorHex: "#c79a1e",
+        images: ["/products/sprint-elite-yellow.svg"],
+        sizes: shoeSizes(["38", "39", "40", "41"]),
+      },
+      {
+        id: "black",
+        colorName: "Preto",
+        colorHex: "#111111",
+        images: ["/products/sprint-elite-black.svg"],
+        sizes: shoeSizes(["39", "40", "42"]),
+      },
+    ],
+    tags: ["competição", "lançamento"],
+  },
+  {
+    id: "court-classic",
+    slug: "court-classic",
+    name: "Havoc Court Classic",
+    subtitle: "Tênis casual de couro",
+    brand: "Havoc",
+    category: "tenis",
+    gender: "unissex",
+    price: 399.9,
+    currency: "BRL",
+    description:
+      "Um clássico atemporal. Couro legítimo, silhueta baixa e conforto para o dia a dia dentro ou fora da quadra.",
+    features: [
+      "Cabedal em couro legítimo",
+      "Entressola em borracha macia",
+      "Reforço na ponteira",
+      "Estilo retrô de quadra",
+    ],
+    isBestSeller: true,
+    rating: 4.6,
+    reviewCount: 289,
+    colorways: [
+      {
+        id: "white",
+        colorName: "Branco",
+        colorHex: "#efefef",
+        images: ["/products/court-classic-white.svg"],
+        sizes: shoeSizes(["37", "38", "39", "40", "41", "42"]),
+      },
+      {
+        id: "navy",
+        colorName: "Azul Marinho",
+        colorHex: "#1b2740",
+        images: ["/products/court-classic-navy.svg"],
+        sizes: shoeSizes(["38", "39", "40", "41"]),
+      },
+    ],
+    tags: ["clássico", "casual"],
+  },
+
+  // ---------- ÓCULOS ----------
+  {
+    id: "shade-runner",
+    slug: "shade-runner",
+    name: "Havoc Shade Runner",
+    subtitle: "Óculos de sol esportivo",
+    brand: "Havoc",
+    category: "oculos",
+    gender: "unissex",
+    price: 279.9,
+    currency: "BRL",
+    description:
+      "Lentes com proteção UV400 e armação leve e flexível, feito para acompanhar seus treinos ao ar livre sem escorregar.",
+    features: [
+      "Proteção UV400",
+      "Armação em TR90 flexível",
+      "Lentes antirreflexo",
+      "Haste emborrachada antiderrapante",
+    ],
+    isNew: true,
+    isBestSeller: true,
+    rating: 4.6,
+    reviewCount: 143,
+    colorways: [
+      {
+        id: "black",
+        colorName: "Preto Fosco",
+        colorHex: "#101010",
+        images: ["/products/shade-runner-black.svg"],
+        sizes: oneSize(),
+      },
+      {
+        id: "tortoise",
+        colorName: "Tartaruga",
+        colorHex: "#5a3d24",
+        images: ["/products/shade-runner-tortoise.svg"],
+        sizes: oneSize(),
+      },
+    ],
+    tags: ["corrida", "lançamento"],
+  },
+  {
+    id: "visor-pro",
+    slug: "visor-pro",
+    name: "Havoc Visor Pro",
+    subtitle: "Óculos de performance",
+    brand: "Havoc",
+    category: "oculos",
+    gender: "unissex",
+    price: 349.9,
+    compareAtPrice: 399.9,
+    currency: "BRL",
+    description:
+      "Lente única envolvente para máximo campo de visão. Ideal para ciclismo, corrida e esportes ao ar livre de alta intensidade.",
+    features: [
+      "Lente única envolvente",
+      "Ventilação anti-embaçante",
+      "Encaixe nasal ajustável",
+      "Proteção UV400",
+    ],
+    rating: 4.7,
+    reviewCount: 87,
+    colorways: [
+      {
+        id: "black",
+        colorName: "Preto",
+        colorHex: "#161616",
+        images: ["/products/visor-pro-black.svg"],
+        sizes: oneSize(),
+      },
+      {
+        id: "blue",
+        colorName: "Azul",
+        colorHex: "#1c3f8a",
+        images: ["/products/visor-pro-blue.svg"],
+        sizes: oneSize(),
+      },
+    ],
+    tags: ["ciclismo", "corrida"],
+  },
+  {
+    id: "aviator-x",
+    slug: "aviator-x",
+    name: "Havoc Aviator X",
+    subtitle: "Óculos de sol clássico",
+    brand: "Havoc",
+    category: "oculos",
+    gender: "unissex",
+    price: 259.9,
+    currency: "BRL",
+    description:
+      "O formato aviador clássico com um toque esportivo moderno. Armação em metal leve e lentes polarizadas.",
+    features: [
+      "Lentes polarizadas",
+      "Armação em metal leve",
+      "Proteção UV400",
+      "Estojo rígido incluso",
+    ],
+    rating: 4.4,
+    reviewCount: 64,
+    colorways: [
+      {
+        id: "gold",
+        colorName: "Dourado",
+        colorHex: "#8a7327",
+        images: ["/products/aviator-x-gold.svg"],
+        sizes: oneSize(),
+      },
+    ],
+    tags: ["clássico"],
+  },
+
+  // ---------- RELÓGIOS ----------
+  {
+    id: "chrono-sport",
+    slug: "chrono-sport",
+    name: "Havoc Chrono Sport",
+    subtitle: "Relógio digital esportivo",
+    brand: "Havoc",
+    category: "relogios",
+    gender: "unissex",
+    price: 449.9,
+    currency: "BRL",
+    description:
+      "Cronômetro, contador de voltas e resistência à água 50m. Feito pra acompanhar cada treino sem sair do pulso.",
+    features: [
+      "Resistente à água 50m",
+      "Cronômetro e contador de voltas",
+      "Luz de fundo LED",
+      "Pulseira em silicone",
+    ],
+    isBestSeller: true,
+    rating: 4.5,
+    reviewCount: 201,
+    colorways: [
+      {
+        id: "black",
+        colorName: "Preto",
+        colorHex: "#0d0d0d",
+        images: ["/products/chrono-sport-black.svg"],
+        sizes: oneSize(),
+      },
+      {
+        id: "silver",
+        colorName: "Prata",
+        colorHex: "#8a8a8a",
+        images: ["/products/chrono-sport-silver.svg"],
+        sizes: oneSize(),
+      },
+    ],
+    tags: ["treino", "digital"],
+  },
+  {
+    id: "pulse-gps",
+    slug: "pulse-gps",
+    name: "Havoc Pulse GPS",
+    subtitle: "Smartwatch com GPS",
+    brand: "Havoc",
+    category: "relogios",
+    gender: "unissex",
+    price: 899.9,
+    compareAtPrice: 1099.9,
+    currency: "BRL",
+    description:
+      "Monitor de frequência cardíaca, GPS integrado e bateria de 14 dias. Seu parceiro completo de corrida e treino.",
+    features: [
+      "GPS integrado",
+      "Monitor de frequência cardíaca 24h",
+      "Bateria de até 14 dias",
+      "Resistente à água 5 ATM",
+    ],
+    isNew: true,
+    rating: 4.8,
+    reviewCount: 112,
+    colorways: [
+      {
+        id: "black",
+        colorName: "Preto",
+        colorHex: "#141414",
+        images: ["/products/pulse-gps-black.svg"],
+        sizes: oneSize(),
+      },
+      {
+        id: "red",
+        colorName: "Vermelho",
+        colorHex: "#8a1c1c",
+        images: ["/products/pulse-gps-red.svg"],
+        sizes: oneSize(),
+      },
+    ],
+    tags: ["corrida", "lançamento", "smartwatch"],
+  },
+  {
+    id: "classic-analog",
+    slug: "classic-analog",
+    name: "Havoc Classic Analog",
+    subtitle: "Relógio analógico casual",
+    brand: "Havoc",
+    category: "relogios",
+    gender: "unissex",
+    price: 329.9,
+    currency: "BRL",
+    description:
+      "Design minimalista para o dia a dia, com pulseira em couro sintético e movimento de quartzo preciso.",
+    features: [
+      "Movimento de quartzo",
+      "Pulseira em couro sintético",
+      "Vidro mineral resistente a riscos",
+      "Resistente a respingos",
+    ],
+    rating: 4.3,
+    reviewCount: 58,
+    colorways: [
+      {
+        id: "brown",
+        colorName: "Marrom",
+        colorHex: "#4a3320",
+        images: ["/products/classic-analog-brown.svg"],
+        sizes: oneSize(),
+      },
+    ],
+    tags: ["casual", "clássico"],
+  },
+
+  // ---------- ROUPAS DE ACADEMIA ----------
+  {
+    id: "core-hoodie",
+    slug: "core-hoodie",
+    name: "Havoc Core Hoodie",
+    subtitle: "Moletom com capuz",
+    brand: "Havoc",
+    category: "roupas-academia",
+    gender: "unissex",
+    price: 329.9,
+    currency: "BRL",
+    description:
+      "Conforto essencial para o dia a dia. Moletom flanelado com capuz ajustável e bolso canguru, corte relaxado.",
+    features: [
+      "Algodão flanelado 320g/m²",
+      "Capuz com cordão ajustável",
+      "Bolso canguru frontal",
+      "Corte relaxado unissex",
+    ],
+    isBestSeller: true,
+    rating: 4.6,
+    reviewCount: 214,
+    colorways: [
+      {
+        id: "black",
+        colorName: "Preto",
+        colorHex: "#141414",
+        images: ["/products/core-hoodie-black.svg"],
+        sizes: apparelSizes(["P", "M", "G", "GG"]),
+      },
+      {
+        id: "grey",
+        colorName: "Cinza Mescla",
+        colorHex: "#7a7a7a",
+        images: ["/products/core-hoodie-grey.svg"],
+        sizes: apparelSizes(["PP", "P", "M", "G"]),
+      },
+    ],
+    tags: ["casual"],
+  },
+  {
+    id: "tech-tee",
+    slug: "tech-tee",
+    name: "Havoc Tech Tee",
+    subtitle: "Camiseta de treino",
+    brand: "Havoc",
+    category: "roupas-academia",
+    gender: "unissex",
+    price: 149.9,
+    currency: "BRL",
+    description:
+      "Tecnologia de secagem rápida com tecido leve e respirável para treinos de alta intensidade.",
+    features: [
+      "Tecido HVC-Dry de secagem rápida",
+      "Costuras planas anti-atrito",
+      "Proteção UV50+",
+      "Corte atlético",
+    ],
+    rating: 4.4,
+    reviewCount: 178,
+    colorways: [
+      {
+        id: "white",
+        colorName: "Branco",
+        colorHex: "#efefef",
+        images: ["/products/tech-tee-white.svg"],
+        sizes: apparelSizes(["PP", "P", "M", "G", "GG"]),
+      },
+      {
+        id: "black",
+        colorName: "Preto",
+        colorHex: "#151515",
+        images: ["/products/tech-tee-black.svg"],
+        sizes: apparelSizes(["P", "M", "G", "GG", "XG"]),
+      },
+    ],
+    tags: ["treino"],
+  },
+  {
+    id: "training-shorts",
+    slug: "training-shorts",
+    name: "Havoc Training Shorts",
+    subtitle: "Shorts de treino",
+    brand: "Havoc",
+    category: "roupas-academia",
+    gender: "masculino",
+    price: 179.9,
+    currency: "BRL",
+    description:
+      "Shorts leve com forro interno e tecido de secagem rápida, ideal para treinos funcionais e corrida.",
+    features: [
+      "Forro interno em mesh",
+      "Tecido leve de secagem rápida",
+      "Bolso com zíper para chaves",
+      "Cós elástico ajustável",
+    ],
+    isNew: true,
+    rating: 4.4,
+    reviewCount: 152,
+    colorways: [
+      {
+        id: "black",
+        colorName: "Preto",
+        colorHex: "#101010",
+        images: ["/products/training-shorts-black.svg"],
+        sizes: apparelSizes(["P", "M", "G", "GG"]),
+      },
+      {
+        id: "navy",
+        colorName: "Azul Marinho",
+        colorHex: "#1b2740",
+        images: ["/products/training-shorts-navy.svg"],
+        sizes: apparelSizes(["P", "M", "G"]),
+      },
+    ],
+    tags: ["treino"],
+  },
+  {
+    id: "flex-legging",
+    slug: "flex-legging",
+    name: "Havoc Flex Legging",
+    subtitle: "Legging de compressão",
+    brand: "Havoc",
+    category: "roupas-academia",
+    gender: "feminino",
+    price: 229.9,
+    compareAtPrice: 269.9,
+    currency: "BRL",
+    description:
+      "Compressão de alto desempenho com cintura alta e tecido que não marca, para treinos de qualquer intensidade.",
+    features: [
+      "Compressão de alta performance",
+      "Cintura alta com sustentação",
+      "Tecido opaco que não marca",
+      "Bolso lateral para celular",
+    ],
+    isNew: true,
+    isBestSeller: true,
+    rating: 4.8,
+    reviewCount: 267,
+    colorways: [
+      {
+        id: "black",
+        colorName: "Preto",
+        colorHex: "#111111",
+        images: ["/products/flex-legging-black.svg"],
+        sizes: apparelSizes(["PP", "P", "M", "G", "GG"]),
+      },
+      {
+        id: "wine",
+        colorName: "Vinho",
+        colorHex: "#5a1c2f",
+        images: ["/products/flex-legging-wine.svg"],
+        sizes: apparelSizes(["P", "M", "G"]),
+      },
+    ],
+    tags: ["treino", "lançamento"],
+  },
+  {
+    id: "sports-bra",
+    slug: "sports-bra",
+    name: "Havoc Sports Bra",
+    subtitle: "Top de sustentação média",
+    brand: "Havoc",
+    category: "roupas-academia",
+    gender: "feminino",
+    price: 139.9,
+    currency: "BRL",
+    description:
+      "Sustentação média para treinos de impacto moderado, com alças ajustáveis e tecido de secagem rápida.",
+    features: [
+      "Sustentação média",
+      "Alças ajustáveis",
+      "Tecido de secagem rápida",
+      "Costura sem costuras nas laterais",
+    ],
+    rating: 4.5,
+    reviewCount: 134,
+    colorways: [
+      {
+        id: "black",
+        colorName: "Preto",
+        colorHex: "#161616",
+        images: ["/products/sports-bra-black.svg"],
+        sizes: apparelSizes(["PP", "P", "M", "G"]),
+      },
+      {
+        id: "sage",
+        colorName: "Verde Sálvia",
+        colorHex: "#5f6f5a",
+        images: ["/products/sports-bra-sage.svg"],
+        sizes: apparelSizes(["P", "M", "G"]),
+      },
+    ],
+    tags: ["treino"],
+  },
+  {
+    id: "track-jacket",
+    slug: "track-jacket",
+    name: "Havoc Track Jacket",
+    subtitle: "Jaqueta de treino",
+    brand: "Havoc",
+    category: "roupas-academia",
+    gender: "unissex",
+    price: 299.9,
+    currency: "BRL",
+    description:
+      "Jaqueta leve com zíper frontal e punhos em ribana, perfeita para aquecer antes do treino ou usar no dia a dia.",
+    features: [
+      "Tecido leve corta-vento",
+      "Zíper frontal full",
+      "Punhos e barra em ribana",
+      "Bolsos com zíper",
+    ],
+    rating: 4.5,
+    reviewCount: 92,
+    colorways: [
+      {
+        id: "black",
+        colorName: "Preto",
+        colorHex: "#101010",
+        images: ["/products/track-jacket-black.svg"],
+        sizes: apparelSizes(["P", "M", "G", "GG"]),
+      },
+    ],
+    tags: ["treino", "casual"],
+  },
+
+  // ---------- INFANTIL ----------
+  {
+    id: "kids-runner",
+    slug: "kids-runner",
+    name: "Havoc Kids Runner",
+    subtitle: "Tênis infantil de corrida",
+    brand: "Havoc",
+    category: "tenis",
+    gender: "infantil",
+    price: 249.9,
+    currency: "BRL",
+    description:
+      "Leve e resistente, o Kids Runner acompanha a energia da criançada com fechamento em velcro e solado antiderrapante.",
+    features: [
+      "Fechamento em velcro fácil de usar",
+      "Solado antiderrapante",
+      "Cabedal respirável e lavável",
+      "Reforço na ponteira",
+    ],
+    isNew: true,
+    rating: 4.6,
+    reviewCount: 58,
+    colorways: [
+      {
+        id: "blue",
+        colorName: "Azul",
+        colorHex: "#1c3f8a",
+        images: ["/products/kids-runner-blue.svg"],
+        sizes: shoeSizes(["30", "31", "32", "33"], ["28", "29", "30", "31", "32", "33", "34"]),
+      },
+      {
+        id: "pink",
+        colorName: "Rosa",
+        colorHex: "#8a2f5a",
+        images: ["/products/kids-runner-pink.svg"],
+        sizes: shoeSizes(["29", "30", "31", "32"], ["28", "29", "30", "31", "32", "33", "34"]),
+      },
+    ],
+    tags: ["corrida", "casual"],
+  },
+  {
+    id: "kids-tee",
+    slug: "kids-tee",
+    name: "Havoc Kids Tee",
+    subtitle: "Camiseta infantil de treino",
+    brand: "Havoc",
+    category: "roupas-academia",
+    gender: "infantil",
+    price: 89.9,
+    currency: "BRL",
+    description:
+      "Camiseta leve de secagem rápida pensada pro dia a dia ativo da criançada, do parquinho à quadra.",
+    features: [
+      "Tecido leve de secagem rápida",
+      "Estampa resistente à lavagem",
+      "Gola reforçada",
+      "Corte confortável",
+    ],
+    isBestSeller: true,
+    rating: 4.7,
+    reviewCount: 91,
+    colorways: [
+      {
+        id: "yellow",
+        colorName: "Amarelo",
+        colorHex: "#c79a1e",
+        images: ["/products/kids-tee-yellow.svg"],
+        sizes: apparelSizes(["4", "6", "8", "10"], ["2", "4", "6", "8", "10", "12"]),
+      },
+      {
+        id: "green",
+        colorName: "Verde",
+        colorHex: "#3f7a3f",
+        images: ["/products/kids-tee-green.svg"],
+        sizes: apparelSizes(["2", "4", "6", "8"], ["2", "4", "6", "8", "10", "12"]),
+      },
+    ],
+    tags: ["treino", "casual"],
+  },
+  {
+    id: "kids-track-set",
+    slug: "kids-track-set",
+    name: "Havoc Kids Track Set",
+    subtitle: "Conjunto infantil de treino",
+    brand: "Havoc",
+    category: "roupas-academia",
+    gender: "infantil",
+    price: 169.9,
+    compareAtPrice: 199.9,
+    currency: "BRL",
+    description:
+      "Conjunto jaqueta + calça em moletom leve, com cós elástico e punhos em ribana pra liberdade de movimento.",
+    features: [
+      "Moletom leve e macio",
+      "Cós elástico ajustável",
+      "Punhos e tornozelos em ribana",
+      "Zíper frontal reforçado",
+    ],
+    isNew: true,
+    rating: 4.5,
+    reviewCount: 34,
+    colorways: [
+      {
+        id: "navy",
+        colorName: "Azul Marinho",
+        colorHex: "#1b2740",
+        images: ["/products/kids-track-set-navy.svg"],
+        sizes: apparelSizes(["4", "6", "8", "10"], ["2", "4", "6", "8", "10", "12"]),
+      },
+    ],
+    tags: ["treino", "lançamento"],
+  },
+];
+
+export function getAllProducts() {
+  return products;
+}
+
+export function getProductBySlug(slug: string) {
+  return products.find((p) => p.slug === slug);
+}
+
+export function getRelatedProducts(product: Product, limit = 4) {
+  return products
+    .filter((p) => p.id !== product.id && p.category === product.category)
+    .slice(0, limit);
+}
+
+export function getNewArrivals(limit = 8) {
+  return products.filter((p) => p.isNew).slice(0, limit);
+}
+
+export function getBestSellers(limit = 8) {
+  return products.filter((p) => p.isBestSeller).slice(0, limit);
+}
