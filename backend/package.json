@@ -1,0 +1,12 @@
+{
+  "name": "havoc-backend",
+  "private": true,
+  "workspaces": [
+    "infra",
+    "api"
+  ],
+  "scripts": {
+    "build": "npm run build --workspaces",
+    "lint": "npm run lint --workspaces --if-present"
+  }
+}

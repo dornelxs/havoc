@@ -99,17 +99,18 @@ src/
 - **Variantes:** cor (colorway) determina imagens e ativa/desativa tamanhos por estoque
 - **Rotas de produto/categoria:** estáticas via `generateStaticParams` (SSG) — todo catálogo mock é conhecido em build time
 
-## 6. Backend futuro (AWS) — decisões em aberto
+## 6. Backend (AWS) — em desenvolvimento
 
-Ainda não implementado. Direção planejada (revisar quando começar):
+A arquitetura de backend está decidida e documentada em detalhe em [`../havoc-documentacao-tecnica.md`](../havoc-documentacao-tecnica.md) (raiz do repositório) — esse é o documento de referência para infraestrutura, modelo de dados, autenticação, painel admin, imagens e segurança. Esta seção mantém só o resumo relevante pro frontend:
 
-- Hospedagem frontend: candidatos — Amplify Hosting, ou CloudFront + S3 (export estático) + Lambda@Edge/CloudFront Functions para SSR se necessário
-- API: API Gateway + Lambda (Node/TS) ou ECS Fargate se precisar de processos long-running
-- Banco de dados: DynamoDB (catálogo/pedidos) ou RDS Postgres se precisar de relacional forte
+- Hospedagem frontend: AWS Amplify Hosting ou Vercel (não decidido, ambos compatíveis)
+- API: API Gateway + Lambda (Node/TS)
+- Banco de dados: RDS Postgres (`db.t4g.micro`, free tier) — modelo relacional (SUPPLIERS/PRODUCTS/VARIANTS/CUSTOMERS/ORDERS/ORDER_ITEMS)
 - Autenticação: Amazon Cognito
-- Pagamentos: gateway brasileiro (Pix/cartão) — integração via Lambda, não decidido ainda qual provedor
-- Imagens de produto: S3 + CloudFront (substituindo os placeholders SVG atuais)
+- Pagamentos: gateway brasileiro (Pix/cartão) — integração via Lambda, provedor ainda não escolhido
+- Imagens de produto: S3 + CloudFront + Lambda de resize/WebP (substituindo os placeholders SVG atuais)
 - Mock atual (`src/data/products.ts`) deve virar contrato de API — manter mesmo shape de `Product`/`CartItem` ao desenhar endpoints, pra reduzir retrabalho no frontend
+- Código do backend vive em `../backend/` (fora deste diretório frontend)
 
 ## 7. Pendências conhecidas
 
@@ -124,6 +125,8 @@ Ainda não implementado. Direção planejada (revisar quando começar):
 ## 8. Changelog
 
 ### 2026-08-23
+- **Backend iniciado em `../backend/`**: scaffold CDK (5 stacks: Network/Database/Auth/Api/Storage) + schema Drizzle completo + handlers Lambda de referência (catálogo público, pedidos do cliente com autorização por linha, admin de produtos com allowlist+auditoria, trigger de criação de conta). Frontend continua 100% mock por enquanto — nenhuma integração real ainda, ver `backend/README.md` e a seção 11 de `../havoc-documentacao-tecnica.md` para o estado exato
+- **Arquitetura de backend definida**: RDS Postgres + Cognito + Lambda/API Gateway + S3/CloudFront (100% AWS, com foco em custo zero/baixo via free tier — evita Aurora Serverless v2). Documentado em detalhe em `../havoc-documentacao-tecnica.md`, incluindo modelo de negócio (dropshipping), modelo de dados, padrão de acesso ao banco (sem RLS automática — autorização por linha é responsabilidade explícita de cada query), autenticação/admin, painel administrativo, pipeline de imagens e checklist de segurança. README e seção 6 deste documento atualizados pra apontar pra ele como fonte da verdade
 - **Mega-menu gerado dinamicamente do catálogo**: `mega-menu-data.ts` deixou de ser hardcoded e agora lê `getAllProducts()` — cada coluna de categoria (Tênis/Roupas/Óculos/Relógios) lista automaticamente todas as tags reais existentes para aquele gênero, então nunca fica com sub-links a menos (nem a mais) do que o catálogo suporta. Coluna de categoria some inteira se não houver produto daquele gênero na categoria. Header ajustado (`gap-8`, colunas `flex-1`, promo `hidden xl:block` pra não espremer em telas menores)
 - **Tabs da PLP agora respeitam o filtro de gênero ativo**: antes listavam todas as tags da categoria inteira mesmo com `?genero=` aplicado, mostrando tabs vazias. Agora `tags` deriva de `genderFiltered`, e a tag ativa é limpa automaticamente da URL se deixar de existir pro gênero selecionado
 - **Mega-menu 100% funcional**: todos os links agora apontam pra combinações reais do catálogo via query params (`/categoria/tenis?genero=masculino&tag=corrida`), sem links redundantes ou mortos. Filtro de tag na PLP migrou de state local pra URL (`?tag=`), igual `?genero=`, pra permitir deep-linking do mega-menu. Adicionados 3 produtos infantis ao mock (`kids-runner`, `kids-tee`, `kids-track-set`) — antes a coluna "Infantil" do mega-menu e `/categoria/infantil` não tinham nenhum produto real

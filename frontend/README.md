@@ -21,7 +21,7 @@ E-commerce da **Havoc**, marca própria de artigos esportivos (tênis, óculos, 
 - [Imagens de produto (placeholders)](#imagens-de-produto-placeholders)
 - [Convenções de código](#convenções-de-código)
 - [Roadmap / o que falta](#roadmap--o-que-falta)
-- [Deploy futuro (AWS)](#deploy-futuro-aws)
+- [Backend (AWS)](#backend-aws)
 
 ---
 
@@ -243,15 +243,14 @@ Ver seção 7 (Pendências conhecidas) de [`DECISIONS.md`](./DECISIONS.md) para 
 - [ ] Substituir os placeholders SVG por fotos reais de produto
 - [ ] Backend em AWS (ver seção abaixo)
 
-## Deploy futuro (AWS)
+## Backend (AWS)
 
-Ainda não implementado — direção planejada, sujeita a revisão quando o backend começar a ser desenvolvido:
+O backend está em desenvolvimento em `../backend/` (fora deste diretório). A arquitetura completa — infraestrutura AWS, modelo de dados, autenticação, painel admin, pipeline de imagens e checklist de segurança — está documentada em [`../havoc-documentacao-tecnica.md`](../havoc-documentacao-tecnica.md), na raiz do repositório. Esse documento é a **fonte da verdade** para qualquer decisão de arquitetura de backend; `DECISIONS.md` neste diretório cobre apenas decisões de frontend.
 
-- **Frontend:** AWS Amplify Hosting, ou CloudFront + S3 (export estático) + Lambda@Edge/CloudFront Functions se precisar de SSR
-- **API:** API Gateway + Lambda (Node/TS), ou ECS Fargate se surgir necessidade de processos long-running
-- **Banco de dados:** DynamoDB (catálogo/pedidos) ou RDS Postgres se for necessário um modelo relacional mais forte
+Resumo rápido (ver o documento completo para detalhes e justificativas):
+
+- **Banco de dados:** RDS Postgres (`db.t4g.micro`, free tier)
+- **API:** Lambda + API Gateway
 - **Autenticação:** Amazon Cognito
+- **Imagens de produto:** S3 + CloudFront + Lambda de resize/WebP, substituindo os SVGs locais
 - **Pagamentos:** gateway brasileiro (Pix/cartão) — provedor ainda não escolhido
-- **Imagens de produto:** S3 + CloudFront, substituindo os SVGs locais
-
-Todas essas decisões serão detalhadas em `DECISIONS.md` conforme forem tomadas.
