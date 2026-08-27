@@ -9,7 +9,6 @@ import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
-  DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
@@ -54,12 +53,12 @@ export function AccountMenu() {
         <User className="size-5" />
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end" className="w-56 rounded-none">
-        <DropdownMenuLabel className="font-mono text-xs uppercase tracking-[0.1em]">
+        <div className="px-1.5 py-1.5 font-mono text-xs uppercase tracking-[0.1em]">
           {user.fullName}
           <span className="block text-muted-foreground normal-case font-sans text-xs mt-0.5">
             {user.email}
           </span>
-        </DropdownMenuLabel>
+        </div>
         <DropdownMenuSeparator />
         <DropdownMenuItem render={<Link href="/minha-conta/pedidos" />} className="gap-2">
           <Package className="size-4" />

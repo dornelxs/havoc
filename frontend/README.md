@@ -220,11 +220,17 @@ Todas as rotas SSG usam `generateStaticParams()` lendo diretamente de `src/data/
 
 | Página | Fonte de dados |
 |---|---|
-| `/admin` (Dashboard) | Dados de exemplo hardcoded — nenhum endpoint de agregação existe no backend |
-| `/admin/produtos` | Mock do frontend (`src/data/products.ts`) — a API real (`GET /admin/products`, com `costPrice` e margem) já existe, falta conectar |
+| `/admin` (Dashboard) | "Variantes Indisponíveis" é real (conta `inStock: false` no catálogo); pedidos/receita/margem são dados de exemplo — nenhum endpoint de agregação existe no backend |
+| `/admin/produtos` | **CRUD completo** contra `useProductStore` (ver abaixo) — listar, criar (`/admin/produtos/novo`), editar (`/admin/produtos/[id]`), excluir. A API real (`GET/POST/PUT/DELETE /admin/products`, com `costPrice` e margem) já existe no backend, falta conectar |
 | `/admin/fornecedores` | Placeholder — `GET/POST/PUT /admin/suppliers` já existem no backend |
 | `/admin/pedidos` | Placeholder — nenhum endpoint admin de pedidos existe ainda (só `GET /orders/mine`, do próprio cliente) |
 | `/admin/clientes` | Placeholder — nenhum endpoint existe ainda |
+
+### CRUD de produto (`useProductStore`)
+
+`src/store/product-store.ts` é um "banco" de produtos editável, client-side (Zustand + `persist`, chave `havoc-products-admin`), seedado com o catálogo mock original. É a ponte temporária até a API real (`backend/api/src/handlers/admin/products/*`) estar deployada — quando isso acontecer, o CRUD do admin passa a chamar a API em vez deste store.
+
+**Importante:** a loja pública (`getAllProducts()` em `src/data/products.ts`) **não lê este store** — continua servindo o catálogo mock original, intocado. Isso é intencional nesta fase (ver `DECISIONS.md`): a regra de produto é "só existe pra loja se o admin cadastrou", mas migrar a loja pública pra ler `useProductStore` (ou a API) é um passo separado, ainda não feito. `ProductForm` (`src/components/admin/product-form.tsx`) é o formulário compartilhado entre criar e editar — nome, slug (auto-gerado, editável), categoria, gênero, preço, descrição, e a lista dinâmica de cores/tamanhos.
 
 ## Estado global (carrinho e wishlist)
 

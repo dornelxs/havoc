@@ -1,19 +1,37 @@
 import { AlertTriangle, DollarSign, Package, ShoppingBag } from "lucide-react";
 import { formatPrice } from "@/lib/format";
+import { getAllProducts } from "@/data/products";
 
 /**
- * Dados de exemplo — nenhum endpoint de dashboard existe no backend ainda
- * (só GET /admin/products, /admin/suppliers e mutações de variant/order).
- * Trocar por chamadas reais assim que houver:
- *   - GET /admin/dashboard (ou agregações client-side de /admin/products
- *     e um futuro /admin/orders) para receita, pedidos do dia e margem.
+ * Pedidos/receita/margem: dados de exemplo — nenhum endpoint de dashboard
+ * existe no backend ainda (só GET /admin/products, /admin/suppliers e
+ * mutações de variant/order). Trocar por chamadas reais assim que houver
+ * GET /admin/dashboard (ou agregações client-side de /admin/products e um
+ * futuro /admin/orders).
+ *
+ * "Variantes Indisponíveis" já é real (não mock): conta quantas variantes
+ * (cor+tamanho) do catálogo estão com `inStock: false`. Não existe "estoque"
+ * com quantidade no modelo de dropshipping — só disponibilidade booleana
+ * por variante, atualizada manualmente pelo admin conforme o fornecedor
+ * avisa (ver seção 2 da doc técnica).
  */
 const MOCK_STATS = {
   ordersToday: 7,
   revenueToday: 4189.3,
   estimatedMarginToday: 1523.4,
-  lowStockAlerts: 3,
 };
+
+function countUnavailableVariants() {
+  return getAllProducts().reduce(
+    (count, product) =>
+      count +
+      product.colorways.reduce(
+        (sum, colorway) => sum + colorway.sizes.filter((s) => !s.inStock).length,
+        0
+      ),
+    0
+  );
+}
 
 const MOCK_RECENT_ORDERS = [
   { id: "a1b2c3d4", customer: "Ana Souza", total: 599.9, status: "pending_payment" },
@@ -28,6 +46,8 @@ const STATUS_LABELS: Record<string, string> = {
 };
 
 export default function AdminDashboardPage() {
+  const unavailableVariants = countUnavailableVariants();
+
   return (
     <div className="space-y-8">
       <div>
@@ -55,9 +75,9 @@ export default function AdminDashboardPage() {
         />
         <StatCard
           icon={AlertTriangle}
-          label="Alertas de Estoque"
-          value={String(MOCK_STATS.lowStockAlerts)}
-          accent
+          label="Variantes Indisponíveis"
+          value={String(unavailableVariants)}
+          accent={unavailableVariants > 0}
         />
       </div>
 
@@ -96,10 +116,11 @@ export default function AdminDashboardPage() {
       <div className="border border-dashed border-border p-4 flex gap-3">
         <Package className="size-5 text-muted-foreground shrink-0 mt-0.5" />
         <p className="text-sm text-muted-foreground">
-          Este painel consome apenas o que já existe na API (produtos, fornecedores,
-          variantes). Pedidos, clientes e as métricas acima ainda precisam dos endpoints
-          admin correspondentes no backend — ver roadmap na seção 11 de{" "}
-          <code>havoc-documentacao-tecnica.md</code>.
+          &quot;Variantes Indisponíveis&quot; é calculado a partir do catálogo real (não
+          existe conceito de estoque com quantidade em dropshipping — só disponibilidade
+          por variante). Pedidos, receita e margem acima são dados de exemplo — ainda
+          precisam dos endpoints admin correspondentes no backend — ver roadmap na seção
+          11 de <code>havoc-documentacao-tecnica.md</code>.
         </p>
       </div>
     </div>

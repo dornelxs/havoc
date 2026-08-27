@@ -72,7 +72,7 @@ export function SiteHeader() {
           ))}
           {SIMPLE_LINKS.map((link) => (
             <Link
-              key={link.href}
+              key={link.label}
               href={link.href}
               className="font-mono text-xs uppercase tracking-[0.15em] text-foreground/70 hover:text-foreground transition-colors"
             >
@@ -119,7 +119,7 @@ export function SiteHeader() {
             onClick={openCart}
           >
             <ShoppingBag className="size-5" />
-            {totalItems > 0 && (
+            {mounted && totalItems > 0 && (
               <span className="absolute -top-1 -right-1 flex h-4.5 min-w-4.5 items-center justify-center rounded-full bg-primary px-1 text-[10px] font-bold text-primary-foreground">
                 {totalItems}
               </span>
@@ -217,7 +217,7 @@ export function SiteHeader() {
           ))}
           {SIMPLE_LINKS.map((link) => (
             <Link
-              key={link.href}
+              key={link.label}
               href={link.href}
               className="py-2 font-mono text-xs uppercase tracking-[0.15em]"
               onClick={() => setMobileOpen(false)}
