@@ -1,17 +1,15 @@
 "use client";
 
-import { useEffect, useState } from "react";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { ProductGrid } from "@/components/product/product-grid";
 import { getAllProducts } from "@/data/products";
 import { useWishlistStore } from "@/store/wishlist-store";
+import { useMounted } from "@/lib/use-mounted";
 
 export default function WishlistPage() {
-  const [mounted, setMounted] = useState(false);
+  const mounted = useMounted();
   const productIds = useWishlistStore((s) => s.productIds);
-
-  useEffect(() => setMounted(true), []);
 
   const products = getAllProducts().filter((p) => productIds.includes(p.id));
 

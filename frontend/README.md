@@ -17,6 +17,8 @@ E-commerce da **Havoc**, marca própria de artigos esportivos (tênis, óculos, 
 - [Identidade visual](#identidade-visual)
 - [Funcionalidades implementadas](#funcionalidades-implementadas)
 - [Rotas da aplicação](#rotas-da-aplicação)
+- [Autenticação (mock)](#autenticação-mock)
+- [Painel admin](#painel-admin)
 - [Estado global (carrinho e wishlist)](#estado-global-carrinho-e-wishlist)
 - [Imagens de produto (placeholders)](#imagens-de-produto-placeholders)
 - [Convenções de código](#convenções-de-código)
@@ -196,8 +198,33 @@ Os tokens de cor ficam em `src/app/globals.css`, dentro de `:root` (light) e `.d
 | `/categoria/[slug]` | SSG | PLP — `slug` é uma categoria (`tenis`, `oculos`, `relogios`, `roupas-academia`) ou um gênero (`masculino`, `feminino`, `unissex`, `infantil`). Aceita `?genero=` e `?tag=` como filtros adicionais |
 | `/produto/[slug]` | SSG | PDP de um produto específico |
 | `/lista-de-desejos` | Client-rendered | Wishlist do usuário (lê do `localStorage`, por isso não pode ser SSG) |
+| `/login`, `/cadastro` | Client-rendered | Login e cadastro — **autenticação mockada**, ver seção "Autenticação (mock)" abaixo |
+| `/minha-conta/pedidos` | Client-rendered | Pedidos do cliente logado — protegida por `useRequireAuth()`; ainda sem fetch real à API |
+| `/admin` | Client-rendered | Painel administrativo — protegida por `useRequireAuth("admin")`. Subrotas: `/admin/produtos` (lê o mock do frontend), `/admin/fornecedores`, `/admin/pedidos`, `/admin/clientes` (placeholders, ver seção "Painel admin" abaixo) |
 
 Todas as rotas SSG usam `generateStaticParams()` lendo diretamente de `src/data/products.ts` — qualquer produto/categoria novo adicionado ao mock já gera página no próximo build, sem código extra.
+
+## Autenticação (mock)
+
+`src/store/auth-store.ts` implementa login/cadastro **inteiramente mockados** — sem Cognito, sem JWT, sem chamada de rede real. É um placeholder deliberado para destravar as telas de login, checkout-exige-sessão e painel admin antes de `Havoc-Auth` (backend) estar deployado.
+
+- Conta de teste: `admin@havoc.com` / `admin123` (role `admin`)
+- Cadastro público sempre nasce com role `customer` — a mesma regra do backend real (nunca aceitar um role vindo de fora)
+- `useRequireAuth(role?)` (`src/lib/use-require-auth.ts`) é um guard de rota **client-side apenas** — proteção de UX, não de segurança. Quando a API estiver deployada, toda chamada precisa validar de novo no servidor (é exatamente o que os handlers Lambda já fazem, ver `backend/README.md`)
+
+**Ao trocar para autenticação real:** substituir `auth-store.ts` por uma integração com `amazon-cognito-identity-js` contra o User Pool criado em `Havoc-Auth`, mantendo a mesma interface pública (`user`, `login`, `signup`, `logout`) para minimizar mudanças nos componentes que já consomem o store.
+
+## Painel admin
+
+`/admin` e subrotas foram criadas como ponto de partida visual, seguindo a estrutura de navegação da seção 8 de `../havoc-documentacao-tecnica.md` (Dashboard, Pedidos, Produtos, Fornecedores, Clientes). Estado atual de cada uma:
+
+| Página | Fonte de dados |
+|---|---|
+| `/admin` (Dashboard) | Dados de exemplo hardcoded — nenhum endpoint de agregação existe no backend |
+| `/admin/produtos` | Mock do frontend (`src/data/products.ts`) — a API real (`GET /admin/products`, com `costPrice` e margem) já existe, falta conectar |
+| `/admin/fornecedores` | Placeholder — `GET/POST/PUT /admin/suppliers` já existem no backend |
+| `/admin/pedidos` | Placeholder — nenhum endpoint admin de pedidos existe ainda (só `GET /orders/mine`, do próprio cliente) |
+| `/admin/clientes` | Placeholder — nenhum endpoint existe ainda |
 
 ## Estado global (carrinho e wishlist)
 

@@ -292,6 +292,9 @@ Código em `backend/` (ver `backend/README.md` para como rodar). Itens já imple
 - [ ] Lambda de transformação/resize de imagem (pipeline WebP completo, seção 9 — hoje o `StorageStack` só serve os arquivos como estão)
 - [ ] AWS Budgets configurado com alerta de custo desde o primeiro deploy
 - [ ] Busca funcional (pendência já identificada no README do frontend)
-- [ ] Página de cadastro e login do cliente no frontend, integrada ao Cognito
+- [x] Página de cadastro e login do cliente no frontend — implementada, mas **autenticação mockada** (`frontend/src/store/auth-store.ts`), ainda não integrada ao Cognito
+- [x] Esqueleto do painel admin no frontend (`frontend/src/app/admin/`: dashboard, produtos, fornecedores, pedidos, clientes) com guard de rota por role — só `/admin/produtos` lê algum dado (o mock do frontend, não a API); as demais são placeholders
+- [ ] Substituir `frontend/src/store/auth-store.ts` (mock) por integração real com Cognito via `amazon-cognito-identity-js`
 - [ ] Conectar o frontend (hoje 100% mock, `frontend/src/data/products.ts`) aos endpoints reais
+- [ ] Endpoints admin de pedidos (`GET /admin/orders`, `PATCH /admin/orders/{id}` para status/rastreio) e de clientes (`GET /admin/customers`, read-only) — necessários para as telas `/admin/pedidos` e `/admin/clientes` do painel
 - [ ] Substituição dos placeholders SVG por fotos reais (pipeline WebP)

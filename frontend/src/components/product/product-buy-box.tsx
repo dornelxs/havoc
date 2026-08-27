@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
+import { useMemo, useState } from "react";
 import { toast } from "sonner";
 import { Heart, Star } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -8,6 +8,7 @@ import { cn } from "@/lib/utils";
 import { formatPrice } from "@/lib/format";
 import { useCartStore } from "@/store/cart-store";
 import { useWishlistStore } from "@/store/wishlist-store";
+import { useMounted } from "@/lib/use-mounted";
 import type { Product } from "@/types/product";
 
 interface ProductBuyBoxProps {
@@ -18,12 +19,10 @@ interface ProductBuyBoxProps {
 
 export function ProductBuyBox({ product, colorId, onColorChange }: ProductBuyBoxProps) {
   const [size, setSize] = useState<string | null>(null);
-  const [mounted, setMounted] = useState(false);
+  const mounted = useMounted();
   const addItem = useCartStore((s) => s.addItem);
   const isWishlisted = useWishlistStore((s) => s.productIds.includes(product.id));
   const toggleWishlist = useWishlistStore((s) => s.toggle);
-
-  useEffect(() => setMounted(true), []);
 
   const colorway = useMemo(
     () => product.colorways.find((c) => c.id === colorId)!,

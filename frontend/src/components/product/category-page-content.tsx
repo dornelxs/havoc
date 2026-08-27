@@ -72,8 +72,6 @@ export function CategoryPageContent({
   const genderParam = searchParams.get("genero") as ProductGender | null;
   const activeTag = searchParams.get("tag");
 
-  const [filtered, setFiltered] = useState<Product[]>(products);
-
   const genderFiltered = useMemo(() => {
     if (!genderParam) return products;
     return products.filter((p) => p.gender === genderParam || p.gender === "unissex");
@@ -92,19 +90,34 @@ export function CategoryPageContent({
 
   const baseForFilters = tagFiltered;
 
-  useEffect(() => {
+  // `filtered` acompanha `baseForFilters` (categoria/gênero/tag mudaram) mas
+  // pode ser sobrescrito pelo <ProductFilters> quando o usuário ordena ou
+  // filtra por cor. Resetar via comparação durante o render — não em um
+  // `useEffect` — é o padrão recomendado pelo React para "estado derivado
+  // que também precisa aceitar override local": evita o render extra que um
+  // efeito causaria a cada troca de categoria/gênero/tag.
+  const [filtered, setFiltered] = useState<Product[]>(baseForFilters);
+  const [lastBase, setLastBase] = useState(baseForFilters);
+  if (baseForFilters !== lastBase) {
+    setLastBase(baseForFilters);
     setFiltered(baseForFilters);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [baseForFilters]);
+  }
 
+  const displayed = filtered;
+
+  // Se a tag ativa deixar de existir pro gênero selecionado (trocou de
+  // gênero e a tag não bate com nenhum produto), limpa a URL — evita ficar
+  // preso numa combinação sem resultado. Isto navega (efeito colateral real
+  // via router), não faz setState local — por isso continua em useEffect.
   useEffect(() => {
     if (activeTag && !tags.includes(activeTag)) {
       setTag(null);
     }
+    // setTag é redefinida a cada render mas só lê `searchParams`/`router`
+    // (ambos já refletidos indiretamente por `activeTag`/`tags`); incluí-la
+    // seria puro ruído sem mudar quando o efeito de fato precisa rodar.
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [activeTag, tags]);
-
-  const displayed = filtered;
 
   const activeDescription = activeTag
     ? TAG_DESCRIPTIONS[activeTag]

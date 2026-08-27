@@ -2,15 +2,17 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { useEffect, useState } from "react";
-import { Heart, Menu, Search, ShoppingBag, User, X } from "lucide-react";
+import { useState } from "react";
+import { Heart, Menu, Search, ShoppingBag, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { HavocMark } from "@/components/brand/havoc-mark";
 import { ThemeToggle } from "@/components/theme-toggle";
+import { AccountMenu } from "@/components/layout/account-menu";
 import { useCartStore } from "@/store/cart-store";
 import { useWishlistStore } from "@/store/wishlist-store";
 import { cn } from "@/lib/utils";
+import { useMounted } from "@/lib/use-mounted";
 import { MEGA_MENU } from "@/components/layout/mega-menu-data";
 
 const SIMPLE_LINKS = [
@@ -21,12 +23,10 @@ const SIMPLE_LINKS = [
 export function SiteHeader() {
   const [mobileOpen, setMobileOpen] = useState(false);
   const [activeMenu, setActiveMenu] = useState<string | null>(null);
-  const [mounted, setMounted] = useState(false);
+  const mounted = useMounted();
   const totalItems = useCartStore((s) => s.totalItems());
   const openCart = useCartStore((s) => s.open);
   const wishlistCount = useWishlistStore((s) => s.productIds.length);
-
-  useEffect(() => setMounted(true), []);
 
   return (
     <header
@@ -96,9 +96,7 @@ export function SiteHeader() {
             />
           </div>
           <ThemeToggle />
-          <Button variant="ghost" size="icon" aria-label="Conta" className="hidden sm:inline-flex">
-            <User className="size-5" />
-          </Button>
+          <AccountMenu />
           <Button
             variant="ghost"
             size="icon"

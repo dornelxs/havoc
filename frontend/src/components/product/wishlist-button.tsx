@@ -1,10 +1,10 @@
 "use client";
 
-import { useEffect, useState } from "react";
 import { Heart } from "lucide-react";
 import { toast } from "sonner";
 import { cn } from "@/lib/utils";
 import { useWishlistStore } from "@/store/wishlist-store";
+import { useMounted } from "@/lib/use-mounted";
 
 interface WishlistButtonProps {
   productId: string;
@@ -19,11 +19,9 @@ export function WishlistButton({
   className,
   size = "sm",
 }: WishlistButtonProps) {
-  const [mounted, setMounted] = useState(false);
+  const mounted = useMounted();
   const isSaved = useWishlistStore((s) => s.productIds.includes(productId));
   const toggle = useWishlistStore((s) => s.toggle);
-
-  useEffect(() => setMounted(true), []);
 
   function handleClick(e: React.MouseEvent) {
     e.preventDefault();
