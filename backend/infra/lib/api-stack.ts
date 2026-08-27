@@ -60,6 +60,7 @@ export class ApiStack extends Stack {
 
     // --- Handlers autenticados (cliente) ---
     const listMyOrdersFn = makeHandler("ListMyOrdersFn", "orders/list-mine.ts");
+    const checkoutFn = makeHandler("CheckoutFn", "orders/checkout.ts");
 
     // --- Handlers admin ---
     const upsertProductFn = makeHandler(
@@ -109,6 +110,12 @@ export class ApiStack extends Stack {
       path: "/orders/mine",
       methods: [HttpMethod.GET],
       integration: new HttpLambdaIntegration("ListMyOrdersIntegration", listMyOrdersFn),
+      authorizer: jwtAuthorizer,
+    });
+    this.httpApi.addRoutes({
+      path: "/orders/checkout",
+      methods: [HttpMethod.POST],
+      integration: new HttpLambdaIntegration("CheckoutIntegration", checkoutFn),
       authorizer: jwtAuthorizer,
     });
 

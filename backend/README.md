@@ -47,6 +47,7 @@ DATABASE_URL=postgres://usuario:senha@host:5432/havoc npm run db:seed
 | `products/list.ts` | `GET /products` | Pública | Lista catálogo, filtros opcionais de categoria/gênero/tag. Nunca retorna `costPrice` |
 | `products/get-by-slug.ts` | `GET /products/{slug}` | Pública | Detalhe de um produto (PDP) |
 | `orders/list-mine.ts` | `GET /orders/mine` | Cliente autenticado | Pedidos do usuário logado — referência do padrão de autorização por linha (ver `src/lib/auth.ts`) |
+| `orders/checkout.ts` | `POST /orders/checkout` | Cliente autenticado | Cria o pedido a partir do carrinho. Recalcula o preço de cada item a partir da variant no banco (nunca confia em preço vindo do client), valida estoque, grava ORDER+ORDER_ITEMS numa transação. Pedido nasce como `pending_payment` — a confirmação de pagamento é responsabilidade do futuro webhook do gateway, não deste handler |
 | `admin/products/upsert.ts` | `POST/PUT /admin/products` | Admin | Cria/atualiza produto, com allowlist Zod e log em `admin_audit_log` |
 | `auth/post-confirmation.ts` | Trigger Cognito | — | Cria o registro em `CUSTOMERS` após confirmação de cadastro, com `role` fixado como `customer` no servidor |
 
