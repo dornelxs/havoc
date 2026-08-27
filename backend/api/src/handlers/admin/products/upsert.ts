@@ -3,8 +3,8 @@ import { eq } from "drizzle-orm";
 import { getDb } from "@/db/client.js";
 import { adminAuditLog, products } from "@/db/schema.js";
 import { upsertProductSchema } from "@/schemas/product.js";
-import { getAuthContext } from "@/lib/auth.js";
-import { badRequest, forbidden, internalError, ok, unauthorized } from "@/lib/http.js";
+import { authFailureResponse, requireAdmin } from "@/lib/auth.js";
+import { badRequest, internalError, ok } from "@/lib/http.js";
 
 /**
  * POST /admin/products — cria ou atualiza um produto do catálogo.
@@ -24,9 +24,9 @@ export async function handler(
   event: APIGatewayProxyEventV2WithJWTAuthorizer
 ): Promise<APIGatewayProxyResultV2> {
   try {
-    const auth = await getAuthContext(event);
-    if (!auth) return unauthorized();
-    if (auth.role !== "admin") return forbidden();
+    const authResult = await requireAdmin(event);
+    if (!authResult.ok) return authFailureResponse(authResult);
+    const { auth } = authResult;
 
     const rawBody = event.body ? JSON.parse(event.body) : null;
     const parsed = upsertProductSchema.safeParse(rawBody);

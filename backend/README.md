@@ -40,26 +40,46 @@ DATABASE_URL=postgres://usuario:senha@host:5432/havoc npm run db:seed
 
 `DATABASE_URL` é usado **só** por esses scripts locais/de deploy. Em runtime, as Lambdas nunca leem `DATABASE_URL` — elas buscam a credencial do Secrets Manager via `src/lib/secrets.ts` (ver seção "Segredos" abaixo).
 
-### Handlers implementados (ponto de partida)
+### Handlers implementados
 
 | Handler | Rota | Autenticação | O que faz |
 |---|---|---|---|
 | `products/list.ts` | `GET /products` | Pública | Lista catálogo, filtros opcionais de categoria/gênero/tag. Nunca retorna `costPrice` |
 | `products/get-by-slug.ts` | `GET /products/{slug}` | Pública | Detalhe de um produto (PDP) |
 | `orders/list-mine.ts` | `GET /orders/mine` | Cliente autenticado | Pedidos do usuário logado — referência do padrão de autorização por linha (ver `src/lib/auth.ts`) |
-| `orders/checkout.ts` | `POST /orders/checkout` | Cliente autenticado | Cria o pedido a partir do carrinho. Recalcula o preço de cada item a partir da variant no banco (nunca confia em preço vindo do client), valida estoque, grava ORDER+ORDER_ITEMS numa transação. Pedido nasce como `pending_payment` — a confirmação de pagamento é responsabilidade do futuro webhook do gateway, não deste handler |
-| `admin/products/upsert.ts` | `POST/PUT /admin/products` | Admin | Cria/atualiza produto, com allowlist Zod e log em `admin_audit_log` |
+| `orders/checkout.ts` | `POST /orders/checkout` | Cliente autenticado | Cria o pedido a partir do carrinho. Recalcula o preço de cada item a partir da variant no banco, valida estoque, grava ORDER+ORDER_ITEMS numa transação. Pedido nasce `pending_payment` — confirmação de pagamento fica pro futuro webhook do gateway |
+| `admin/products/list.ts` | `GET /admin/products` | Admin | Lista produtos com `costPrice` e margem calculada (`marginAbsolute`/`marginPercent`) — única rota que expõe custo, porque exige admin |
+| `admin/products/upsert.ts` | `POST /admin/products`, `PUT /admin/products/{id}` | Admin | Cria/atualiza produto, allowlist Zod, log em `admin_audit_log` |
+| `admin/products/delete.ts` | `DELETE /admin/products/{id}` | Admin | Remove produto (cascade em `variants`); falha se alguma variant já foi usada num pedido (`onDelete: restrict` em `order_items`) |
+| `admin/suppliers/list.ts` | `GET /admin/suppliers` | Admin | Lista fornecedores |
+| `admin/suppliers/upsert.ts` | `POST /admin/suppliers`, `PUT /admin/suppliers/{id}` | Admin | Cria/atualiza fornecedor |
+| `admin/variants/upsert.ts` | `POST /admin/variants`, `PUT /admin/variants/{id}` | Admin | Cria/atualiza variant (cor/tamanho/preço/**costPrice**/estoque) — único endpoint que aceita `costPrice` num payload |
+| `admin/variants/delete.ts` | `DELETE /admin/variants/{id}` | Admin | Remove variant; falha se já usada num pedido — prefira `inStock: false` nesse caso |
 | `auth/post-confirmation.ts` | Trigger Cognito | — | Cria o registro em `CUSTOMERS` após confirmação de cadastro, com `role` fixado como `customer` no servidor |
 
-Estes cinco cobrem os três padrões que qualquer novo endpoint deve seguir: rota pública, rota autenticada com filtro por dono do dado, e rota admin com allowlist + auditoria. Ao adicionar um endpoint novo, comece copiando o mais parecido com o que você precisa.
+Os handlers de `products/`, `orders/list-mine.ts` e `admin/products/upsert.ts` cobrem os três padrões que qualquer novo endpoint deve seguir: rota pública, rota autenticada com filtro por dono do dado, e rota admin com allowlist + auditoria. Ao adicionar um endpoint novo, comece copiando o mais parecido com o que você precisa.
 
 ### Convenções ao adicionar um handler
 
 - **Nunca faça `SELECT *`** — liste as colunas explicitamente (`columns: {...}` no Drizzle), principalmente pra nunca vazar `costPrice` de `variants` ou dados de `suppliers` numa resposta pública.
-- **Toda rota que não é pública precisa resolver `getAuthContext()`** (`src/lib/auth.ts`) e checar `role` quando for admin-only — o API Gateway JWT Authorizer garante só que o token é válido, não que o usuário tem a permissão certa.
+- **Toda rota que não é pública precisa usar `requireAdmin()` (admin) ou `getAuthContext()` (cliente autenticado)**, ambos em `src/lib/auth.ts` — o API Gateway JWT Authorizer garante só que o token é válido, não que o usuário tem a permissão certa. `requireAdmin()` já embute a checagem de role; use `authFailureResponse(result)` pra traduzir a falha na resposta HTTP certa.
 - **Toda query que filtra por dono do registro precisa do filtro explícito** (`WHERE customer_id = ...` equivalente em Drizzle) — não existe RLS automática no RDS (ver seção 4 da doc técnica). Esquecer esse filtro é uma falha de segurança (IDOR), não um bug cosmético.
 - **Todo payload de escrita passa por um schema Zod** em `src/schemas/` antes de tocar o banco — a allowlist do schema é o que impede mass assignment.
 - **Toda mutação feita por um admin grava em `admin_audit_log`** — copie o padrão de `admin/products/upsert.ts`.
+- **`costPrice` só é aceito em `schemas/variant.ts`**, usado só por `admin/variants/upsert.ts`. Nenhum outro schema de entrada deveria incluir esse campo.
+
+### Provisionando a primeira conta de admin
+
+Não existe rota pública de criação de admin (seção 7 da doc técnica). Use o script dedicado, depois que `Havoc-Auth` e `Havoc-Database` estiverem deployados:
+
+```bash
+cd backend/api
+USER_POOL_ID=us-east-1_xxxxx \
+DATABASE_URL=postgres://usuario:senha@host:5432/havoc \
+npm run provision-admin -- admin@havoc.com "SenhaTemporariaForte123!"
+```
+
+O script (`scripts/provision-admin.ts`) cria o usuário no Cognito via `AdminCreateUserCommand` (nunca via signup público), define senha permanente, e faz upsert do registro em `CUSTOMERS` com `role: "admin"` — esse é o único lugar do código onde `role` é setado como admin. Comunique a senha ao novo admin por um canal seguro e peça pra trocá-la no primeiro login.
 
 ## Pacote `infra/`
 

@@ -283,7 +283,8 @@ Código em `backend/` (ver `backend/README.md` para como rodar). Itens já imple
 - [x] Trigger `PostConfirmation` do Cognito — cria o perfil no signup com `role` fixado como `customer` no servidor
 - [ ] Provisionar de fato a infra numa conta AWS (`cdk bootstrap` + `cdk deploy`) — até agora só sintetizado localmente, nada rodando na nuvem
 - [ ] Rodar a migration contra o RDS real após o primeiro deploy (`npm run db:migrate`)
-- [ ] Script interno de provisionamento de conta admin (fora do app público, via `AdminCreateUserCommand`)
+- [x] Script interno de provisionamento de conta admin (`backend/api/scripts/provision-admin.ts`, fora do app público, via `AdminCreateUserCommand`)
+- [x] CRUD admin completo: produtos (list com margem/upsert/delete), fornecedores (list/upsert), variantes (upsert com `costPrice`/delete)
 - [x] Função de checkout (`POST /orders/checkout`) — criação de pedido em transação, preço recalculado server-side a partir da variant, validação de estoque, exigência de sessão ativa via JWT Authorizer + checagem no handler
 - [ ] Webhook de pagamento com verificação de assinatura
 - [ ] Rate limiting em login, criação de conta e checkout (usage plans do API Gateway ou AWS WAF)

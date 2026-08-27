@@ -62,10 +62,38 @@ export class ApiStack extends Stack {
     const listMyOrdersFn = makeHandler("ListMyOrdersFn", "orders/list-mine.ts");
     const checkoutFn = makeHandler("CheckoutFn", "orders/checkout.ts");
 
-    // --- Handlers admin ---
+    // --- Handlers admin: produtos ---
     const upsertProductFn = makeHandler(
       "UpsertProductFn",
       "admin/products/upsert.ts"
+    );
+    const listAdminProductsFn = makeHandler(
+      "ListAdminProductsFn",
+      "admin/products/list.ts"
+    );
+    const deleteProductFn = makeHandler(
+      "DeleteProductFn",
+      "admin/products/delete.ts"
+    );
+
+    // --- Handlers admin: fornecedores ---
+    const upsertSupplierFn = makeHandler(
+      "UpsertSupplierFn",
+      "admin/suppliers/upsert.ts"
+    );
+    const listSuppliersFn = makeHandler(
+      "ListSuppliersFn",
+      "admin/suppliers/list.ts"
+    );
+
+    // --- Handlers admin: variantes (cor/tamanho) ---
+    const upsertVariantFn = makeHandler(
+      "UpsertVariantFn",
+      "admin/variants/upsert.ts"
+    );
+    const deleteVariantFn = makeHandler(
+      "DeleteVariantFn",
+      "admin/variants/delete.ts"
     );
 
     const jwtAuthorizer = new HttpJwtAuthorizer(
@@ -85,6 +113,7 @@ export class ApiStack extends Stack {
           CorsHttpMethod.GET,
           CorsHttpMethod.POST,
           CorsHttpMethod.PUT,
+          CorsHttpMethod.DELETE,
           CorsHttpMethod.OPTIONS,
         ],
         allowHeaders: ["Content-Type", "Authorization"],
@@ -122,6 +151,14 @@ export class ApiStack extends Stack {
     // Rotas admin — mesmo authorizer JWT; o handler confere role === "admin"
     // explicitamente (API Gateway sozinho não sabe distinguir customer de
     // admin, só que o token é válido).
+
+    // Produtos
+    this.httpApi.addRoutes({
+      path: "/admin/products",
+      methods: [HttpMethod.GET],
+      integration: new HttpLambdaIntegration("ListAdminProductsIntegration", listAdminProductsFn),
+      authorizer: jwtAuthorizer,
+    });
     this.httpApi.addRoutes({
       path: "/admin/products",
       methods: [HttpMethod.POST],
@@ -132,6 +169,52 @@ export class ApiStack extends Stack {
       path: "/admin/products/{id}",
       methods: [HttpMethod.PUT],
       integration: new HttpLambdaIntegration("UpdateProductIntegration", upsertProductFn),
+      authorizer: jwtAuthorizer,
+    });
+    this.httpApi.addRoutes({
+      path: "/admin/products/{id}",
+      methods: [HttpMethod.DELETE],
+      integration: new HttpLambdaIntegration("DeleteProductIntegration", deleteProductFn),
+      authorizer: jwtAuthorizer,
+    });
+
+    // Fornecedores
+    this.httpApi.addRoutes({
+      path: "/admin/suppliers",
+      methods: [HttpMethod.GET],
+      integration: new HttpLambdaIntegration("ListSuppliersIntegration", listSuppliersFn),
+      authorizer: jwtAuthorizer,
+    });
+    this.httpApi.addRoutes({
+      path: "/admin/suppliers",
+      methods: [HttpMethod.POST],
+      integration: new HttpLambdaIntegration("UpsertSupplierIntegration", upsertSupplierFn),
+      authorizer: jwtAuthorizer,
+    });
+    this.httpApi.addRoutes({
+      path: "/admin/suppliers/{id}",
+      methods: [HttpMethod.PUT],
+      integration: new HttpLambdaIntegration("UpdateSupplierIntegration", upsertSupplierFn),
+      authorizer: jwtAuthorizer,
+    });
+
+    // Variantes (cor/tamanho)
+    this.httpApi.addRoutes({
+      path: "/admin/variants",
+      methods: [HttpMethod.POST],
+      integration: new HttpLambdaIntegration("UpsertVariantIntegration", upsertVariantFn),
+      authorizer: jwtAuthorizer,
+    });
+    this.httpApi.addRoutes({
+      path: "/admin/variants/{id}",
+      methods: [HttpMethod.PUT],
+      integration: new HttpLambdaIntegration("UpdateVariantIntegration", upsertVariantFn),
+      authorizer: jwtAuthorizer,
+    });
+    this.httpApi.addRoutes({
+      path: "/admin/variants/{id}",
+      methods: [HttpMethod.DELETE],
+      integration: new HttpLambdaIntegration("DeleteVariantIntegration", deleteVariantFn),
       authorizer: jwtAuthorizer,
     });
   }
